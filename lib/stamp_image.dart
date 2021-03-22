@@ -18,7 +18,9 @@ class StampImage {
     OverlayState? overlayState = Overlay.of(context, rootOverlay: true);
     OverlayEntry? entry;
     await Future.delayed(Duration(milliseconds: 100));
-    OverlayEntry? lastEntry = overlayState?.widget.initialEntries.first;
+    OverlayEntry? lastEntry = overlayState?.widget.initialEntries != null
+        ? overlayState?.widget.initialEntries.first
+        : null;
     entry = OverlayEntry(
       builder: (context) {
         return StampWidget(
@@ -26,7 +28,6 @@ class StampImage {
           child: child,
           onSuccess: (file) {
             onSuccess(file);
-            entry?.remove();
           },
         );
       },
@@ -60,7 +61,11 @@ class _StampWidgetState extends State<StampWidget> {
 
     Directory? dir = await getExternalStorageDirectory();
     String? path = dir?.path;
-    final file = await new File('$path/image.png').create();
+    final file = File('$path/stamp_image_${DateTime.now().toString()}.png');
+    if (await file.exists()) {
+      await file.delete();
+    }
+    file.create();
     file.writeAsBytesSync(currentFrame!);
     widget.onSuccess!(file);
   }
