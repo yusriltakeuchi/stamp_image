@@ -18,9 +18,7 @@ class StampImage {
     OverlayState? overlayState = Overlay.of(context, rootOverlay: true);
     OverlayEntry? entry;
     await Future.delayed(Duration(milliseconds: 100));
-    OverlayEntry? lastEntry = overlayState?.widget.initialEntries != null
-        ? overlayState?.widget.initialEntries.first
-        : null;
+    OverlayEntry? lastEntry = overlayState?.widget.initialEntries.first;
     entry = OverlayEntry(
       builder: (context) {
         return StampWidget(
