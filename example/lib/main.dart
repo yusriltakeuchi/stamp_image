@@ -34,10 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       await resetImage();
+
       StampImage.create(
           context: context,
           image: File(pickedFile.path),
-          child: [
+          children: [
             Positioned(
               bottom: 0,
               right: 0,

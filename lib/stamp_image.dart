@@ -10,20 +10,23 @@ import 'package:path_provider/path_provider.dart';
 class StampImage {
   ///Create watermark to an existing image file [image] and custom Widget as the watermark item.
   ///You can customize the position using alignment
-  static Future create(
+  static void create(
       {required BuildContext context,
       required File image,
-      required List<Widget> child,
+      required List<Widget> children,
+      bool? saveFile = false,
+      String? savePath,
       required Function(File) onSuccess}) async {
     OverlayState? overlayState = Overlay.of(context, rootOverlay: true);
     OverlayEntry? entry;
     await Future.delayed(Duration(milliseconds: 100));
     OverlayEntry? lastEntry = overlayState?.widget.initialEntries.first;
+
     entry = OverlayEntry(
       builder: (context) {
         return StampWidget(
           image: image,
-          child: child,
+          children: children,
           onSuccess: (file) {
             onSuccess(file);
           },
@@ -38,10 +41,17 @@ class StampImage {
 }
 
 class StampWidget extends StatefulWidget {
-  final List<Widget> child;
+  final List<Widget> children;
   final File? image;
-  final Function(File)? onSuccess;
-  StampWidget({required this.child, required this.image, this.onSuccess});
+  final bool? saveFile;
+  final String? savePath;
+  final Function(File) onSuccess;
+  StampWidget(
+      {required this.children,
+      required this.image,
+      this.saveFile,
+      this.savePath,
+      required this.onSuccess});
 
   @override
   _StampWidgetState createState() => _StampWidgetState();
@@ -59,13 +69,23 @@ class _StampWidgetState extends State<StampWidget> {
 
     Directory? dir = await getExternalStorageDirectory();
     String? path = dir?.path;
-    final file = File('$path/stamp_image_${DateTime.now().toString()}.png');
-    if (await file.exists()) {
-      await file.delete();
+
+    final file = createFile(
+        '$path/stamp_image_${DateTime.now().toString()}.png', currentFrame);
+
+    ///When user want to use saveFile, then
+    ///it will saved to selected path location
+    if (widget.saveFile == true && widget.savePath != null) {
+      createFile(widget.savePath, currentFrame);
     }
+    widget.onSuccess(file);
+  }
+
+  File createFile(String? path, Uint8List? data) {
+    final file = File(path!);
     file.create();
-    file.writeAsBytesSync(currentFrame!);
-    widget.onSuccess!(file);
+    file.writeAsBytesSync(data!);
+    return file;
   }
 
   ///Converting Widget to PNG
@@ -77,8 +97,8 @@ class _StampWidgetState extends State<StampWidget> {
     return byteData?.buffer.asUint8List();
   }
 
-  ///Generating list of child for watermark item
-  List<Widget> generateWidget() => widget.child.map((e) => e).toList();
+  ///Generating list of children for watermark item
+  List<Widget> generateWidget() => widget.children.map((e) => e).toList();
 
   @override
   void initState() {

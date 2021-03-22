@@ -22,7 +22,7 @@ void generate() {
   StampImage.create(
     context: context, 
     image: imageFile, 
-    child: [
+    children: [
       Positioned(
         bottom: 0,
         right: 0,
@@ -33,6 +33,31 @@ void generate() {
         left: 0,
         child: _logoFlutter(),
       )
+    ],
+    onSuccess: (file) {
+      resultStamp(file);
+    }
+  );
+}
+```
+
+If you want to use auto save file to specific location,
+you can use this syntax. I give an example using path_provider
+to get path location
+```dart
+void generate() {
+  Directory? directory = await getDownloadsDirectory();
+  StampImage.create(
+    context: context, 
+    image: imageFile,
+    savePath: directory?.path,
+    saveFile: true,
+    children: [
+      Positioned(
+        bottom: 0,
+        right: 0,
+        child: _watermarkItem(),
+      ),
     ],
     onSuccess: (file) {
       resultStamp(file);
