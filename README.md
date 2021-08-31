@@ -34,9 +34,7 @@ void generate() {
         child: _logoFlutter(),
       )
     ],
-    onSuccess: (file) {
-      resultStamp(file);
-    }
+    onSuccess: (file) => resultStamp(file),
   );
 }
 ```
@@ -59,9 +57,7 @@ void generate() {
         child: _watermarkItem(),
       ),
     ],
-    onSuccess: (file) {
-      resultStamp(file);
-    }
+    onSuccess: (file) => resultStamp(file),
   );
 }
 ```
