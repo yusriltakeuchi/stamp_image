@@ -1,6 +1,6 @@
 name: stamp_image
 description: Stamp_image is a library to create a watermark using any widget
-version: 0.0.1
+version: 0.0.2
 author: Yusril Rapsanjani<yuranicorp@gmail.com>
 homepage: https://github.com/yusriltakeuchi/stamp_image.git
 
